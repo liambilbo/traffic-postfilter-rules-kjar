@@ -1,0 +1,15 @@
+package com.dxc.bankia.traffic_postfilter_rules.core;
+
+import com.dxc.bankia.model.Notification;
+
+rule "Send Notification"
+no-loop true
+salience 100
+when
+    $n: Notification()
+then
+     channels["notification-channel"].send($n);
+end
+
+
+

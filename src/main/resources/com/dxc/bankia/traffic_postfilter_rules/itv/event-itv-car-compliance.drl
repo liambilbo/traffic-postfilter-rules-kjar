@@ -1,0 +1,20 @@
+package com.dxc.bankia.traffic_postfilter_rules.itv;
+
+import com.dxc.bankia.model.Event;
+import com.dxc.bankia.model.Notification;
+import com.dxc.bankia.model.functions.DateUtils;
+
+
+rule "event-itv-compliance"
+	dialect "mvel"
+	when
+		$e : Event( $t : type == ( Event.Type.REQUEST_CAR_ITV_COMPLIANCE ) , vehicle != null )
+		Vehicle(nextItvDate != null , nextItvDate before ( DateUtils.today() ) ) from $e.getVehicle()
+	then
+        Notification fact0 = new Notification();
+		fact0.setEventId( $e.getId() );
+		fact0.setEventType( $t );
+		fact0.setType( Notification.Type.NOT_COMPLIANCE );
+		fact0.setMessage( "last itv date was "+DateUtils.toString($e.getVehicle().getLastItvDate()) );
+		insert( fact0 );
+end

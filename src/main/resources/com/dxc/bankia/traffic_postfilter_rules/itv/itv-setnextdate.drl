@@ -1,0 +1,26 @@
+package com.dxc.bankia.traffic_postfilter_rules.itv;
+
+import com.dxc.bankia.model.Event;
+import com.dxc.bankia.model.Vehicle;
+import com.dxc.bankia.services.FinderService;
+
+global FinderService finderService;
+
+rule "itv set date"
+	when
+		$e : Event( $t : type == ( Event.Type.REQUEST_CAR_ITV_COMPLIANCE ) , vehicle != null )
+		$v : Vehicle(nextItvDate == null) from $e.getVehicle()
+     then
+      insert($v);
+end
+
+rule "itv-period-not-allocated"
+salience -25
+	when
+		$v : Vehicle(nextItvDate == null )
+		$e : Event( $t : type == ( Event.Type.REQUEST_CAR_ITV_COMPLIANCE ) , vehicle == $v )
+
+	then
+     String message="error - event id "+$e.getId() +" for vehicle "+$v+"itv period not found";
+     channels["error-channel"].send(message);
+end

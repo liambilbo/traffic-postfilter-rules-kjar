@@ -1,0 +1,6 @@
+<kmodule xmlns="http://www.drools.org/xsd/kmodule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <kbase name="postFilterBase" default="true" eventProcessingMode="stream" equalsBehavior="identity" packages="com.dxc.bankia.traffic_postfilter_rules.itv, com.dxc.bankia.traffic_postfilter_rules.core">
+    <ksession name="postFilterSession" type="stateful" default="true" clockType="realtime"/>
+    <ksession name="postFilterStatelessSession" type="stateless" default="false" clockType="realtime"/>
+  </kbase>
+</kmodule>
